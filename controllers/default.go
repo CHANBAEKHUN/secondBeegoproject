@@ -40,7 +40,7 @@ func (c *MainController) Post(){
 		c.Ctx.ResponseWriter.Write([]byte("数据校验失败"))
 		return
 	}
-	c.Ctx.ResponseWriter.Write([]byte("数据校验成功"))*/
+	c.Ctx.ResponseWriter.Write([]byte("数据校验成功"))
 
 	var person models.Person
 	data,err:=ioutil.ReadAll(c.Ctx.Request.Body)
@@ -56,5 +56,34 @@ func (c *MainController) Post(){
 	fmt.Println("姓名:",person.Name)
 	fmt.Println("年龄:",person.Age)
 	fmt.Println("性别:",person.Sex)
+	c.Ctx.WriteString("数据请求成功")*/
+	//定义请求接收name，birthday，address，nick
+    name:=c.Ctx.Request.FormValue("name")
+	birthday:=c.Ctx.Request.FormValue("birthday")
+	address:=c.Ctx.Request.FormValue("address")
+	nick:=c.Ctx.Request.FormValue("nick")
+	fmt.Println(name,birthday,address,nick)
+	//用得到的数据进行对比
+	if name != "ganping" && address !="jinxian"{
+		c.Ctx.WriteString("数据接收错误，重试")
+	   return
+	}
+		c.Ctx.WriteString("数据接收成功，恭喜!!")
+
+	var person models.Person
+	data,err:=ioutil.ReadAll(c.Ctx.Request.Body)
+	if err !=nil{
+		c.Ctx.WriteString("数据接收错误")
+		return
+	}
+	err =json.Unmarshal(data,&person)
+	if err !=nil{
+		c.Ctx.WriteString("数据解析错误")
+		return
+	}
+	fmt.Println("姓名:",person.Name)
+	fmt.Println("生日:",person.Birthday)
+	fmt.Println("地址:",person.Address)
+	fmt.Println("昵称",person.Nick)
 	c.Ctx.WriteString("数据请求成功")
 }
